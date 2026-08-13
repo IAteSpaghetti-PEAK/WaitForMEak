@@ -24,6 +24,22 @@ namespace WaitForMEak
     /// </summary>
     internal static class HeldBelongings
     {
+        /// <summary>Anything in the three slots, the temp slot, or the backpack slot.</summary>
+        internal static bool IsCarryingAnything(Character c)
+        {
+            Player p = c != null ? c.player : null;
+            if (p == null) return false;
+
+            if (p.backpackSlot != null && !p.backpackSlot.IsEmpty()) return true;
+            if (p.tempFullSlot != null && !p.tempFullSlot.IsEmpty()) return true;
+            if (p.itemSlots != null)
+            {
+                foreach (ItemSlot slot in p.itemSlots)
+                    if (slot != null && !slot.IsEmpty()) return true;
+            }
+            return false;
+        }
+
         /// <summary>Every status the character is carrying, indexed by STATUSTYPE.</summary>
         internal static float[] SnapshotStatuses(Character c)
         {

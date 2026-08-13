@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace WaitForMEak
@@ -13,6 +14,9 @@ namespace WaitForMEak
     /// </summary>
     internal static class Arrival
     {
+        private static readonly Dictionary<Character, CharacterSyncer> _syncers =
+            new Dictionary<Character, CharacterSyncer>();
+
         /// <summary>
         /// True when <paramref name="c"/> has been standing on sane, non-vertical ground long
         /// enough to drop someone next to them. <paramref name="groundPoint"/> is the spot they
@@ -23,7 +27,7 @@ namespace WaitForMEak
             groundPoint = Vector3.zero;
             if (c == null) return false;
             if (c.data.dead || c.data.fullyPassedOut || c.warping) return false;
-            if (c.data.isClimbing || c.data.isRopeClimbing || c.data.isVineClimbing) return false;
+            if (IsClimbing(c)) return false;
             if (c.data.isCarried) return false;
 
             if (!c.data.isGrounded) return false;
@@ -44,6 +48,55 @@ namespace WaitForMEak
 
             groundPoint = ground;
             return true;
+        }
+
+        /// <summary>
+        /// Whether the scout is on a wall, a rope or a vine.
+        ///
+        /// The climbing flags on <c>CharacterData</c> are only driven for the local player, so on
+        /// the host they read false for everyone else, which is precisely the set of scouts this
+        /// mod cares about. The owner does publish them though: <c>CharacterSyncer</c> writes
+        /// <c>isClimbing</c> and <c>ropeClimbing</c> into every sync packet. Reading the last one
+        /// received is the authoritative answer.
+        /// </summary>
+        private static bool IsClimbing(Character c)
+        {
+            if (c.IsLocal)
+                return c.data.isClimbing || c.data.isRopeClimbing || c.data.isVineClimbing;
+
+            CharacterSyncer syncer = GetSyncer(c);
+            if (syncer == null || syncer.RemoteValue.IsNone)
+            {
+                // No packet yet. Fall back to the local flags, which is what we had before.
+                return c.data.isClimbing || c.data.isRopeClimbing || c.data.isVineClimbing;
+            }
+
+            CharacterSyncData latest = syncer.RemoteValue.Value;
+            return latest.isClimbing || latest.ropeClimbing || c.data.isVineClimbing;
+        }
+
+        private static CharacterSyncer GetSyncer(Character c)
+        {
+            if (_syncers.TryGetValue(c, out CharacterSyncer cached) && cached != null) return cached;
+
+            CharacterSyncer syncer = c.GetComponent<CharacterSyncer>();
+            _syncers[c] = syncer;
+            return syncer;
+        }
+
+        /// <summary>Drop characters that have gone away, so the cache can't grow across runs.</summary>
+        internal static void ForgetDeadEntries()
+        {
+            if (_syncers.Count == 0) return;
+
+            List<Character> stale = null;
+            foreach (KeyValuePair<Character, CharacterSyncer> pair in _syncers)
+            {
+                if (pair.Key != null && pair.Value != null) continue;
+                (stale ?? (stale = new List<Character>())).Add(pair.Key);
+            }
+            if (stale == null) return;
+            foreach (Character c in stale) _syncers.Remove(c);
         }
 
         /// <summary>

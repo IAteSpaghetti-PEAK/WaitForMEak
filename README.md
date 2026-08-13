@@ -36,9 +36,10 @@ they'll die eventually, and then someone else is the lowest scout.
 If a held joiner drops out before they've been placed, the mod remembers them. Rejoin and the hold
 picks up where it left off, rather than the game quietly restoring them to base camp.
 
-**When the base camp campfire is already spawning joiners in alive, the mod stays out of the way.**
-No ghost, no teleport, no Curse. The game has already put them into the run, so there's nothing to
-fix. The pack rules below still apply either way.
+**When the game brings a joiner into the run by itself, the mod stays out of the way.** No ghost,
+no teleport, no Curse. That's mostly the base camp campfire: if it has revived the group, joiners
+arrive standing with everyone else and there's nothing to fix. The mod doesn't try to predict this,
+it just watches whether the joiner comes up alive. The pack rules below still apply either way.
 
 ## Settings
 
@@ -47,7 +48,7 @@ These four are the ones on the **WAITFORMEAK** menu tab (and, as ever, in the co
 | Setting | Default | What it does |
 | --- | --- | --- |
 | **Curse as if revived** | Off | Joiners arrive with the Curse a revive would have cost them (0.05, or 0.15 on Ascent 7+). See below for why you might want it on. |
-| **Pack for late joiners** | Off | `Off`: nothing.<br>`AlwaysFannypack`: a fresh fanny pack every time.<br>`OnlyIfLeftBehind`: only if a backpack or fanny pack is lying abandoned on the ground somewhere in the run. That pack, and everything inside it, is handed over. Backpacks win over fanny packs. |
+| **Pack for late joiners** | Off | `Off`: nothing.<br>`AlwaysFannypack`: a fresh fanny pack every time.<br>`OnlyIfLeftBehind`: only if a backpack or fanny pack is lying on the ground somewhere in the run. That pack, and everything inside it, is handed over. Backpacks win over fanny packs. Note that it doesn't know abandoned from parked, so a pack deliberately left at a campfire is fair game. |
 | **Seconds the scout must be standing** | 1 s | How long the lowest scout has to have been on solid ground before a joiner is dropped next to them. Raise it if joiners keep landing on someone who'd only just touched down. |
 | **Also move reconnecting players** | Off | Whether someone rejoining a run they were already in is held and moved too. Off because the game restores those players to where they left off, and hauling them down to the lowest scout would throw that away. See below. |
 
@@ -77,6 +78,10 @@ the various grace periods.
 With *Also move reconnecting players* switched on, being held costs a returning player nothing but
 time. They keep their items, their backpack and their statuses, and they keep their own Curse
 instead of being given a joiner's. Only their position changes.
+
+One case is deliberately left alone even with the toggle on: if the base camp campfire has revived
+the group, the game brings a returning scout back to that campfire, which is exactly where they
+should be. Standing with everyone else is the point, so the mod doesn't drag them off it.
 
 Two things had to be worked around for that. The normal revive drops everything you're carrying,
 and a held player's body sits in the death zone, so their loot would have landed somewhere

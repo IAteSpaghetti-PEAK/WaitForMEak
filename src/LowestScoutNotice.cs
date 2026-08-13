@@ -18,8 +18,14 @@ namespace WaitForMEak
     /// </summary>
     internal static class LowestScoutNotice
     {
-        /// <summary>Photon event codes 0-199 are free for games to use; PEAK itself only uses 18.</summary>
-        internal const byte EventCode = 79;
+        /// <summary>
+        /// Photon event codes 0-199 are free for games to use, and PEAK itself only uses 18. 79 is
+        /// a guess at "nobody else has taken this", so it's configurable in case another mod picks
+        /// the same one. Host and joiner have to agree on it; if they don't, the hint just never
+        /// shows and nothing else is affected.
+        /// </summary>
+        private static byte EventCode =>
+            (byte)Mathf.Clamp(WaitConfig.NoticeEventCode != null ? WaitConfig.NoticeEventCode.Value : 79, 0, 199);
 
         /// <summary>How long a notice stays live without a refresh.</summary>
         private const float NoticeLifetime = 5f;
@@ -45,6 +51,9 @@ namespace WaitForMEak
             _nextPush.Remove(actorNumber);
             Raise(actorNumber, 0);
         }
+
+        /// <summary>Drop a player's throttle entry when they leave, with nothing to send them.</summary>
+        internal static void Forget(int actorNumber) => _nextPush.Remove(actorNumber);
 
         private static void Raise(int actorNumber, int viewId)
         {

@@ -59,6 +59,8 @@ namespace WaitForMEak
         public static ConfigEntry<float> MaxTargetSpeed;
         public static ConfigEntry<float> ArrivalOffset;
 
+        public static ConfigEntry<int> NoticeEventCode;
+
         public static ConfigEntry<float> SettleSeconds;
         public static ConfigEntry<float> SpawnTimeoutSeconds;
         public static ConfigEntry<float> PostReviveDelay;
@@ -119,9 +121,17 @@ namespace WaitForMEak
             ArrivalOffset = cfg.Bind("Arrival", "ArrivalOffset", 1.5f,
                 Hidden("How far to the side of the target the joiner lands, in metres."));
 
-            SettleSeconds = cfg.Bind("Timing", "SettleSeconds", 2.5f,
-                Hidden("Grace period after a joiner's character appears before this mod touches it, " +
-                       "so the game's own late-join spawn routine can finish first."));
+            NoticeEventCode = cfg.Bind("General", "NoticeEventCode", 79,
+                Hidden("Photon event code used to tell a waiting joiner who the lowest scout is. " +
+                       "Only worth changing if another mod happens to use the same one. The host " +
+                       "and the joiner both have to be set to the same value, and if they aren't " +
+                       "the only thing lost is that hint. Valid range is 0 to 199."));
+
+            SettleSeconds = cfg.Bind("Timing", "SettleSeconds", 4f,
+                Hidden("How long to watch a joiner's character after it appears before deciding " +
+                       "what to do with them. The game's own late-join spawn takes a moment to " +
+                       "finish, and whether it leaves them dead is the signal this mod reads, so " +
+                       "don't set this shorter than that spawn takes."));
             SpawnTimeoutSeconds = cfg.Bind("Timing", "SpawnTimeoutSeconds", 90f,
                 Hidden("Give up on a joiner whose character never shows up within this many seconds."));
             PostReviveDelay = cfg.Bind("Timing", "PostReviveDelay", 1f,
