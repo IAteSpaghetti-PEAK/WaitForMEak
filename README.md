@@ -10,6 +10,16 @@ standing somewhere sane.
 **Only the host needs this mod.** Everything is driven by the master client through the game's
 own RPCs, so the people joining can be running vanilla.
 
+## ModConfig is optional
+
+[ModConfig](https://thunderstore.io/c/peak/p/PEAKModding/ModConfig/) is listed as a dependency, but
+it is **not required** — the mod does exactly the same thing with or without it. What it adds is a
+**Wait For MEAK** tab in the in-game mod settings menu, so you can turn the Curse, the pack rules
+and the rest on and off from the pause screen, mid-run, instead of alt-tabbing out to edit a text
+file. Skip it if you'd rather not install anything extra: every setting is still there in
+`BepInEx/config/com.iatespaghetti.waitformeak.cfg`, and the ones that don't fit in the menu live
+only in that file anyway.
+
 ## What happens
 
 1. A player joins a run that has already left the shore.
@@ -29,10 +39,7 @@ fix. The pack rules below still apply either way.
 
 ## Settings
 
-Four settings show up in the in-game mod settings menu, under the **Wait For MEAK** tab. That menu
-comes from [ModConfig](https://thunderstore.io/c/peak/p/PEAKModding/ModConfig/), which is listed as
-a dependency purely for convenience — it's **optional**, and without it these (and everything else)
-are still editable in `BepInEx/config/com.iatespaghetti.waitformeak.cfg`:
+These four are the ones on the **Wait For MEAK** menu tab (and, as ever, in the config file):
 
 | Setting | Default | What it does |
 | --- | --- | --- |
