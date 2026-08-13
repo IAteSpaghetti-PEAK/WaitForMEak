@@ -46,13 +46,27 @@ These four are the ones on the **WAITFORMEAK** menu tab (and, as ever, in the co
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| **Curse as if revived** | Off | Joiners arrive with the Curse a revive would have cost them (0.05, or 0.15 on Ascent 7+). |
+| **Curse as if revived** | On | Joiners arrive with the Curse a revive would have cost them (0.05, or 0.15 on Ascent 7+). See below for why this is on. |
 | **Pack for late joiners** | Off | `Off`: nothing.<br>`AlwaysFannypack`: a fresh fanny pack every time.<br>`OnlyIfLeftBehind`: only if a backpack or fanny pack is lying abandoned on the ground somewhere in the run. That pack, and everything inside it, is handed over. Backpacks win over fanny packs. |
 | **Seconds the scout must be standing** | 1 s | How long the lowest scout has to have been on solid ground before a joiner is dropped next to them. Raise it if joiners keep landing on someone who'd only just touched down. |
 | **Also move reconnecting players** | Off | Whether someone rejoining a run they were already in is held and moved too. Off because the game restores those players to where they left off, and hauling them down to the lowest scout would throw that away. See below. |
 
+### Why the Curse is on by default
+
+Landing next to the group is a revive in all but name. The mod is doing for free what the group
+would otherwise have had to walk back down and pay for, and reviving anyone costs Curse: 0.05
+normally, 0.15 from Ascent 7 up. Charging a late joiner the same keeps the mod from being a way to
+dodge that, and keeps a run where somebody hops in and out from ending up cheaper than one where
+everybody stayed.
+
+Turn it off if you'd rather joining a run in progress cost nothing at all. It's one toggle, and
+nothing else about the mod changes.
+
 The **Ascent 7/8 starting Curse is always applied**. That's the Ascent's rule rather than the
 mod's, so there's no toggle for it. *Curse as if revived* is the revival Curse on top of that.
+
+Neither one touches a joiner the base camp campfire spawns in by itself (the game has already
+handled their Curse) or a reconnecting player (they keep the Curse they'd built up).
 
 Everything else lives in the config file under the `General`, `Arrival` and `Timing` sections: how
 steep is too steep, how far to the side joiners land, whether they're held as ghosts at all, and

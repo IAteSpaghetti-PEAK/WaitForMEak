@@ -66,11 +66,16 @@ namespace WaitForMEak
 
         public static void Bind(ConfigFile cfg)
         {
-            CurseAsIfRevived = cfg.Bind("General", "Curse as if revived", false,
+            CurseAsIfRevived = cfg.Bind("General", "Curse as if revived", true,
                 "Late joiners start with the same amount of Curse a revive would have given them " +
-                "(0.05, or 0.15 on Ascent 7+). The Ascent 7/8 starting Curse is applied either " +
-                "way, so this is the extra revival Curse on top of it. It doesn't apply to " +
-                "joiners the base camp campfire spawns in by itself; the game handles their Curse.");
+                "(0.05, or 0.15 on Ascent 7+). On by default, because being put down next to the " +
+                "group is a revive in all but name, and the group would have paid that Curse to " +
+                "bring anyone else back. Turn it off if you'd rather joining a run in progress " +
+                "cost nothing at all.\n" +
+                "The Ascent 7/8 starting Curse is applied either way, so this is the revival " +
+                "Curse on top of it. Neither applies to joiners the base camp campfire spawns in " +
+                "by itself, or to reconnecting players; the game handles the first and the mod " +
+                "leaves the second's own Curse alone.");
 
             PackForJoiners = cfg.Bind("General", "Pack for late joiners", PackOnJoin.Off,
                 "What a late joiner gets once they arrive, campfire spawn or not.\n" +
