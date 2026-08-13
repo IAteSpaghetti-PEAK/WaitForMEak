@@ -56,7 +56,6 @@ namespace WaitForMEak
         public static ConfigEntry<float> MaxGroundSlope;
         public static ConfigEntry<float> MaxTargetSpeed;
         public static ConfigEntry<float> ArrivalOffset;
-        public static ConfigEntry<float> FallbackAfterSeconds;
 
         public static ConfigEntry<float> SettleSeconds;
         public static ConfigEntry<float> SpawnTimeoutSeconds;
@@ -103,9 +102,6 @@ namespace WaitForMEak
                        "— catches sliding, being launched, and rocket rides."));
             ArrivalOffset = cfg.Bind("Arrival", "ArrivalOffset", 1.5f,
                 Hidden("How far to the side of the target the joiner lands, in metres."));
-            FallbackAfterSeconds = cfg.Bind("Arrival", "FallbackAfterSeconds", 90f,
-                Hidden("If the lowest scout never reaches a standable place within this many seconds, " +
-                       "drop the joiner on the lowest scout who IS standing somewhere. 0 = wait forever."));
 
             SettleSeconds = cfg.Bind("Timing", "SettleSeconds", 2.5f,
                 Hidden("Grace period after a joiner's character appears before this mod touches it, " +

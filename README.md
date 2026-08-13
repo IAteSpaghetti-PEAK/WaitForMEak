@@ -19,8 +19,9 @@ own RPCs, so the people joining can be running vanilla.
 4. The first time they're standing on solid, non-vertical ground for a moment, the joiner is
    revived right beside them.
 
-If the lowest scout is stuck somewhere unstandable for a long time (90 s by default), the joiner
-is dropped on the lowest scout who *is* standing somewhere instead, so nobody waits forever.
+There's no timeout and no second-choice target — the joiner waits on the lowest scout for as long
+as it takes. Nobody gets stranded by that: if the lowest scout never reaches anywhere standable
+they'll die eventually, and then someone else is the lowest scout.
 
 **When the base camp campfire is already spawning joiners in alive, the mod stays out of the way** —
 no ghost, no teleport, no Curse. The game has already put them into the run, so there's nothing to

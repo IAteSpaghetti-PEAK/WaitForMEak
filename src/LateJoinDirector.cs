@@ -140,7 +140,9 @@ namespace WaitForMEak
 
         private void Tick()
         {
-            Character lowest = FindLowest(standableOnly: false);
+            // Recomputed every tick, so if the lowest scout dies (or someone drops below them)
+            // the joiner simply starts waiting on whoever the lowest scout is now.
+            Character lowest = FindLowest();
 
             _scratch.Clear();
             _scratch.AddRange(_pending.Values);
@@ -179,33 +181,18 @@ namespace WaitForMEak
                 if (WaitConfig.GhostWhileWaiting.Value && !p.Character.data.dead)
                     MakeGhost(p);
 
-                Character target = lowest;
-                Vector3 ground = Vector3.zero;
-                bool standable = target != null && Arrival.IsStandable(target, out ground);
-
-                if (!standable && WaitConfig.FallbackAfterSeconds.Value > 0f
-                    && Time.time - p.JoinedAt > WaitConfig.FallbackAfterSeconds.Value)
-                {
-                    Character fallback = FindLowest(standableOnly: true);
-                    if (fallback != null && Arrival.IsStandable(fallback, out ground))
-                    {
-                        Plugin.Log.LogInfo("Lowest scout still isn't anywhere standable after " +
-                                           $"{WaitConfig.FallbackAfterSeconds.Value:0}s - dropping {p.Nickname} on " +
-                                           $"{fallback.characterName} instead.");
-                        target = fallback;
-                        standable = true;
-                    }
-                }
-
-                if (target == null) continue; // nobody alive to go to; stay a ghost
+                if (lowest == null) continue; // nobody alive to go to; stay a ghost
 
                 if (WaitConfig.ForceSpectateTarget.Value)
-                    SpectateOverride.PushTarget(p.ActorNumber, target);
+                    SpectateOverride.PushTarget(p.ActorNumber, lowest);
 
-                if (!standable) continue;
+                // No timeout and no second-choice target: the joiner waits for the lowest scout
+                // for as long as it takes. If that scout never reaches anywhere standable they
+                // will eventually die, and then someone else is the lowest scout.
+                if (!Arrival.IsStandable(lowest, out Vector3 ground)) continue;
 
                 p.Completing = true;
-                StartCoroutine(PlaceJoiner(p, target, ground));
+                StartCoroutine(PlaceJoiner(p, lowest, ground));
             }
         }
 
@@ -231,11 +218,8 @@ namespace WaitForMEak
             _pending.Remove(p.ActorNumber);
         }
 
-        /// <summary>
-        /// The lowest living scout, ignoring anyone we're still holding. Pass
-        /// <paramref name="standableOnly"/> to only consider scouts who are currently settled.
-        /// </summary>
-        private Character FindLowest(bool standableOnly)
+        /// <summary>The lowest living scout, ignoring anyone we're still holding.</summary>
+        private Character FindLowest()
         {
             Character best = null;
             float bestY = float.MaxValue;
@@ -248,8 +232,6 @@ namespace WaitForMEak
                 PhotonView view = c.photonView;
                 if (view == null || view.Owner == null) continue;
                 if (_pending.ContainsKey(view.Owner.ActorNumber)) continue;
-
-                if (standableOnly && !Arrival.IsStandable(c, out _)) continue;
 
                 float y = c.Center.y;
                 if (y < bestY)
