@@ -46,21 +46,21 @@ These four are the ones on the **WAITFORMEAK** menu tab (and, as ever, in the co
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| **Curse as if revived** | On | Joiners arrive with the Curse a revive would have cost them (0.05, or 0.15 on Ascent 7+). See below for why this is on. |
+| **Curse as if revived** | Off | Joiners arrive with the Curse a revive would have cost them (0.05, or 0.15 on Ascent 7+). See below for why you might want it on. |
 | **Pack for late joiners** | Off | `Off`: nothing.<br>`AlwaysFannypack`: a fresh fanny pack every time.<br>`OnlyIfLeftBehind`: only if a backpack or fanny pack is lying abandoned on the ground somewhere in the run. That pack, and everything inside it, is handed over. Backpacks win over fanny packs. |
 | **Seconds the scout must be standing** | 1 s | How long the lowest scout has to have been on solid ground before a joiner is dropped next to them. Raise it if joiners keep landing on someone who'd only just touched down. |
 | **Also move reconnecting players** | Off | Whether someone rejoining a run they were already in is held and moved too. Off because the game restores those players to where they left off, and hauling them down to the lowest scout would throw that away. See below. |
 
-### Why the Curse is on by default
+### Why you might want the Curse on
 
-Landing next to the group is a revive in all but name. The mod is doing for free what the group
-would otherwise have had to walk back down and pay for, and reviving anyone costs Curse: 0.05
-normally, 0.15 from Ascent 7 up. Charging a late joiner the same keeps the mod from being a way to
-dodge that, and keeps a run where somebody hops in and out from ending up cheaper than one where
-everybody stayed.
+It's off by default, so joining a run in progress costs nothing. That's the friendly setting, and
+probably the right one if people are hopping in and out of your lobby casually.
 
-Turn it off if you'd rather joining a run in progress cost nothing at all. It's one toggle, and
-nothing else about the mod changes.
+The case for turning it on: landing next to the group is a revive in all but name. The mod is doing
+for free what the group would otherwise have walked back down and paid for, and reviving anyone
+costs Curse (0.05 normally, 0.15 from Ascent 7 up). Charging a late joiner the same keeps the mod
+from being a way around that, and stops a run where somebody hops out and back in from working out
+cheaper than one where everybody stayed. It's one toggle, and nothing else about the mod changes.
 
 The **Ascent 7/8 starting Curse is always applied**. That's the Ascent's rule rather than the
 mod's, so there's no toggle for it. *Curse as if revived* is the revival Curse on top of that.
