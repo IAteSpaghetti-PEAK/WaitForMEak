@@ -34,11 +34,11 @@ still editable in `BepInEx/config/com.iatespaghetti.waitformeak.cfg`):
 
 | Setting | Default | What it does |
 | --- | --- | --- |
-| **CurseAsIfRevived** | Off | Joiners arrive with the Curse a revive would have cost them (0.05, or 0.15 on Ascent 7+). |
-| **PackForJoiners** | Off | `Off` — nothing.<br>`AlwaysFannypack` — a fresh fanny pack every time.<br>`OnlyIfLeftBehind` — only if a backpack or fanny pack is lying abandoned on the ground somewhere in the run; that pack, and everything inside it, is handed over. Backpacks win over fanny packs. |
+| **Curse as if revived** | Off | Joiners arrive with the Curse a revive would have cost them (0.05, or 0.15 on Ascent 7+). |
+| **Pack for late joiners** | Off | `Off` — nothing.<br>`AlwaysFannypack` — a fresh fanny pack every time.<br>`OnlyIfLeftBehind` — only if a backpack or fanny pack is lying abandoned on the ground somewhere in the run; that pack, and everything inside it, is handed over. Backpacks win over fanny packs. |
 
 The **Ascent 7/8 starting Curse is always applied** — that's the Ascent's rule, not the mod's, so
-there's no toggle for it. `CurseAsIfRevived` is the revival Curse *on top* of that.
+there's no toggle for it. *Curse as if revived* is the revival Curse *on top* of that.
 
 Everything else (how long the target has to be grounded, how steep is too steep, the fallback
 timeout, whether joiners are held as ghosts at all, reconnecting players) lives in the config file

@@ -27,6 +27,15 @@ namespace WaitForMEak
     /// tagged "Hidden" so the menu stays clean while the values remain editable in the .cfg.
     /// The tag is a plain BepInEx description tag, so this needs no reference to (or
     /// dependency on) ModConfig — without it installed the mod behaves exactly the same.
+    ///
+    /// ModConfig labels a setting with its config KEY verbatim (BepInExOffOn/BepInExEnum
+    /// .GetDisplayName() returns Definition.Key; only the mod's own tab name gets camelCase
+    /// split). So the two visible keys are written as readable, spaced sentences — BepInEx only
+    /// rejects = \n \t \ " ' [ ] in keys, spaces are fine and other PEAK mods do the same.
+    /// Dropdown choices, on the other hand, are Enum.GetNames() verbatim and can't be spaced:
+    /// the only alternative ModConfig offers (a string entry with an AcceptableValueList) hits
+    /// a `return` instead of `continue` in its ProcessModEntries loop, which would silently drop
+    /// every setting registered after ours — including other mods'. Not worth it.
     /// </summary>
     internal static class WaitConfig
     {
@@ -56,13 +65,13 @@ namespace WaitForMEak
 
         public static void Bind(ConfigFile cfg)
         {
-            CurseAsIfRevived = cfg.Bind("General", "CurseAsIfRevived", false,
+            CurseAsIfRevived = cfg.Bind("General", "Curse as if revived", false,
                 "Late joiners start with the same amount of Curse a revive would have given them " +
                 "(0.05, or 0.15 on Ascent 7+). The Ascent 7/8 starting Curse is applied either way — " +
                 "this is the extra revival Curse on top of it. Doesn't apply to joiners the base " +
                 "camp campfire spawns in by itself; the game handles their Curse.");
 
-            PackForJoiners = cfg.Bind("General", "PackForJoiners", PackOnJoin.Off,
+            PackForJoiners = cfg.Bind("General", "Pack for late joiners", PackOnJoin.Off,
                 "What a late joiner gets once they arrive — campfire spawn or not.\n" +
                 "Off: nothing.\n" +
                 "AlwaysFannypack: a fresh fanny pack every time.\n" +
