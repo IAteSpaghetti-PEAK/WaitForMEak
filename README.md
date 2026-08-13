@@ -98,6 +98,15 @@ The spectate panel lives on the spectating player's own machine, so this only sh
 player *also* has the mod installed. It's a bonus, not a requirement. Vanilla clients ignore the
 message and spectate as usual.
 
+## Found a bug?
+
+Please open an issue at
+[github.com/IAteSpaghetti-PEAK/WaitForMEak/issues](https://github.com/IAteSpaghetti-PEAK/WaitForMEak/issues).
+This mod steps in at an awkward moment in a run, so odd cases are very much expected. What helps
+most is what you were doing when it happened: which biome, whether the campfire was lit, whether
+the joiner was new or reconnecting, and anything the mod logged. Its lines are all prefixed
+`WAITFORMEAK` in `BepInEx/LogOutput.log`. Feature ideas are welcome there too.
+
 ## Building
 
 Requires the .NET 8 SDK and a PEAK install. The project references the game DLLs directly:
