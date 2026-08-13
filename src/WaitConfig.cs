@@ -44,15 +44,17 @@ namespace WaitForMEak
             new ConfigDescription(description, null, "Hidden");
 
         // --- Shown in the in-game Mod Settings menu ---
+        // All of these live in the [General] section so they land on one section tab rather than
+        // being split across two; [Arrival] and [Timing] are then purely the tuning knobs.
         public static ConfigEntry<bool> CurseAsIfRevived;
         public static ConfigEntry<PackOnJoin> PackForJoiners;
+        public static ConfigEntry<float> GroundedSecondsRequired;
+        public static ConfigEntry<bool> IncludeReconnectingPlayers;
 
         // --- Config-file only ---
-        public static ConfigEntry<bool> IncludeReconnectingPlayers;
         public static ConfigEntry<bool> GhostWhileWaiting;
         public static ConfigEntry<bool> ForceSpectateTarget;
 
-        public static ConfigEntry<float> GroundedSecondsRequired;
         public static ConfigEntry<float> MaxGroundSlope;
         public static ConfigEntry<float> MaxTargetSpeed;
         public static ConfigEntry<float> ArrivalOffset;
@@ -78,11 +80,21 @@ namespace WaitForMEak
                 "somewhere in the run — that pack (and everything in it) is handed to them. " +
                 "Backpacks are preferred over fanny packs.");
 
+            // A slider, so it needs an explicit range - ModConfig falls back to 0-1000 for a
+            // float with no AcceptableValueRange, which would make this one unusable.
+            GroundedSecondsRequired = cfg.Bind("General", "Seconds the scout must be standing", 1f,
+                new ConfigDescription(
+                    "How long the lowest scout has to have been standing on the ground before a " +
+                    "waiting joiner is dropped next to them. Stops arrivals mid-hop. Raise it if " +
+                    "joiners keep landing on someone who was only briefly on solid ground.",
+                    new AcceptableValueRange<float>(0f, 5f)));
+
+            IncludeReconnectingPlayers = cfg.Bind("General", "Also move reconnecting players", false,
+                "Also hold and move players who are RE-connecting to a run they were already part " +
+                "of. Off by default: the game restores those players to where they left off, and " +
+                "hauling them down to the lowest scout would undo that.");
+
             // Everything below is hidden from the in-game menu (still editable here).
-            IncludeReconnectingPlayers = cfg.Bind("General", "IncludeReconnectingPlayers", false,
-                Hidden("Also grab players who are RE-connecting to a run they were already part of. " +
-                       "Off by default: the game restores those players to where they left off, and " +
-                       "yanking them to the lowest scout would undo that."));
             GhostWhileWaiting = cfg.Bind("General", "GhostWhileWaiting", true,
                 Hidden("Keep joiners dead (ghost/spectator) until the lowest scout is somewhere safe " +
                        "to drop them. Off: they are left wherever the game spawned them and are just " +
@@ -92,9 +104,6 @@ namespace WaitForMEak
                        "dropped on. Only does anything if that player also has this mod installed — " +
                        "the spectator camera is picked entirely on their own machine."));
 
-            GroundedSecondsRequired = cfg.Bind("Arrival", "GroundedSecondsRequired", 1f,
-                Hidden("How long the target has to have been standing on the ground before we drop " +
-                       "the joiner on them. Stops arrivals mid-hop."));
             MaxGroundSlope = cfg.Bind("Arrival", "MaxGroundSlope", 45f,
                 Hidden("Steepest ground (degrees) that still counts as a standable place."));
             MaxTargetSpeed = cfg.Bind("Arrival", "MaxTargetSpeed", 6f,

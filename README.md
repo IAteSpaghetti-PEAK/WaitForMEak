@@ -29,28 +29,24 @@ fix. The pack rules below still apply either way.
 
 ## Settings
 
-Two settings show up in the in-game mod settings menu, under the **Wait For MEAK** tab. That menu
+Four settings show up in the in-game mod settings menu, under the **Wait For MEAK** tab. That menu
 comes from [ModConfig](https://thunderstore.io/c/peak/p/PEAKModding/ModConfig/), which is listed as
-a dependency purely for convenience — it's **optional**, and without it the same two settings (and
-everything else) are still editable in `BepInEx/config/com.iatespaghetti.waitformeak.cfg`:
+a dependency purely for convenience — it's **optional**, and without it these (and everything else)
+are still editable in `BepInEx/config/com.iatespaghetti.waitformeak.cfg`:
 
 | Setting | Default | What it does |
 | --- | --- | --- |
 | **Curse as if revived** | Off | Joiners arrive with the Curse a revive would have cost them (0.05, or 0.15 on Ascent 7+). |
 | **Pack for late joiners** | Off | `Off` — nothing.<br>`AlwaysFannypack` — a fresh fanny pack every time.<br>`OnlyIfLeftBehind` — only if a backpack or fanny pack is lying abandoned on the ground somewhere in the run; that pack, and everything inside it, is handed over. Backpacks win over fanny packs. |
+| **Seconds the scout must be standing** | 1 s | How long the lowest scout has to have been on solid ground before a joiner is dropped next to them. Raise it if joiners keep landing on someone who'd only just touched down. |
+| **Also move reconnecting players** | Off | Whether someone rejoining a run they were already in is held and moved too. Off because the game restores those players to where they left off, and hauling them down to the lowest scout would throw that away. |
 
 The **Ascent 7/8 starting Curse is always applied** — that's the Ascent's rule, not the mod's, so
 there's no toggle for it. *Curse as if revived* is the revival Curse *on top* of that.
 
-Everything else (how long the target has to be grounded, how steep is too steep, the fallback
-timeout, whether joiners are held as ghosts at all, reconnecting players) lives in the config file
-under the `Arrival`, `Timing` and `General` sections.
-
-### Reconnecting players
-
-Off by default. Someone rejoining a run they were already in gets restored to where they left off
-by the game, and hauling them down to the lowest scout would throw that away. Flip
-`IncludeReconnectingPlayers` if you want them treated like fresh joiners.
+Everything else — how steep is too steep, how far to the side joiners land, whether they're held as
+ghosts at all, the various grace periods — lives in the config file under the `General`, `Arrival`
+and `Timing` sections.
 
 ### Spectating while waiting
 
