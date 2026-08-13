@@ -1,0 +1,9 @@
+{
+    "name": "WaitForMEak",
+    "version_number": "0.1.0",
+    "website_url": "https://github.com/IAteSpaghetti-PEAK/WaitForMEak",
+    "description": "Players who join a run in progress are held as ghosts and dropped next to the lowest living scout instead of the base camp. Host only.",
+    "dependencies": [
+        "BepInEx-BepInExPack_PEAK-5.4.75301"
+    ]
+}

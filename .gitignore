@@ -1,0 +1,33 @@
+# Build output
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+*.dll
+*.pdb
+*.mdb
+
+# Local overrides / IDE
+*.user
+*.suo
+.vs/
+.idea/
+.vscode/
+*.DotSettings.user
+
+# Claude Code local settings
+.claude/
+
+# NuGet
+*.nupkg
+packages/
+
+# OS cruft
+Thumbs.db
+.DS_Store
+
+# Thunderstore package output
+artifacts/
+
+# Release assets are committed so the release workflow can attach them
+!release-assets/*.dll
