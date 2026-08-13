@@ -229,8 +229,8 @@ namespace WaitForMEak
 
                 if (lowest == null) continue; // nobody alive to go to; stay a ghost
 
-                if (WaitConfig.ForceSpectateTarget.Value)
-                    SpectateOverride.PushTarget(p.ActorNumber, lowest);
+                if (WaitConfig.TellJoinersWhoIsLowest.Value)
+                    LowestScoutNotice.Push(p.ActorNumber, lowest);
 
                 // No timeout and no second-choice target: the joiner waits for the lowest scout
                 // for as long as it takes. If that scout never reaches anywhere standable they
@@ -344,7 +344,7 @@ namespace WaitForMEak
                 JoinPack.Grant(c);
             }
 
-            SpectateOverride.ClearTarget(p.ActorNumber);
+            LowestScoutNotice.Clear(p.ActorNumber);
             _pending.Remove(p.ActorNumber);
         }
     }

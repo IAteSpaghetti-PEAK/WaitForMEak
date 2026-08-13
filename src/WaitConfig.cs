@@ -53,7 +53,7 @@ namespace WaitForMEak
 
         // Config-file only.
         public static ConfigEntry<bool> GhostWhileWaiting;
-        public static ConfigEntry<bool> ForceSpectateTarget;
+        public static ConfigEntry<bool> TellJoinersWhoIsLowest;
 
         public static ConfigEntry<float> MaxGroundSlope;
         public static ConfigEntry<float> MaxTargetSpeed;
@@ -105,10 +105,11 @@ namespace WaitForMEak
                 Hidden("Keep joiners dead (ghost/spectator) until the lowest scout is somewhere safe " +
                        "to drop them. Off: they are left wherever the game spawned them and are just " +
                        "teleported when the time comes."));
-            ForceSpectateTarget = cfg.Bind("General", "ForceSpectateTarget", true,
-                Hidden("While waiting, ask the joiner's game to spectate the scout they're going to be " +
-                       "dropped on. Only does anything if that player also has this mod installed, " +
-                       "because the spectator camera is picked entirely on their own machine."));
+            TellJoinersWhoIsLowest = cfg.Bind("General", "TellJoinersWhoIsLowest", true,
+                Hidden("While a joiner waits, show them who the lowest scout is on the spectate " +
+                       "panel, under whoever they're currently watching. Their camera is left " +
+                       "alone; they can switch to that scout themselves if they want. Only does " +
+                       "anything if that player also has this mod installed."));
 
             MaxGroundSlope = cfg.Bind("Arrival", "MaxGroundSlope", 45f,
                 Hidden("Steepest ground (degrees) that still counts as a standable place."));

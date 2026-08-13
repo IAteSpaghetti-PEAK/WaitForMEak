@@ -85,10 +85,18 @@ free cure-all. Joiners who really are new still take the ordinary path.
 
 ### Spectating while waiting
 
-While a joiner is waiting, the host tells their game to watch the scout they're going to land on.
-The spectator camera is chosen entirely on the spectating player's own machine, so this only does
-anything if that player *also* has the mod installed. It's a bonus, not a requirement. Vanilla
-clients ignore the message and spectate whoever they like.
+A waiting joiner spectates whoever they like, exactly as normal. The mod doesn't take their camera
+off them.
+
+What it does add is a line on the spectate panel, under the name of whoever they're currently
+watching, naming the lowest scout: the one they're actually waiting on. If they're already watching
+that scout, the line reads **LOWEST PLAYER** instead of repeating the name. Either way they can
+press left and right to look around, and see at a glance who has to find their footing before they
+get dropped in.
+
+The spectate panel lives on the spectating player's own machine, so this only shows up if that
+player *also* has the mod installed. It's a bonus, not a requirement. Vanilla clients ignore the
+message and spectate as usual.
 
 ## Building
 

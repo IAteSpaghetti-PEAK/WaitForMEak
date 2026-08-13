@@ -1,6 +1,5 @@
 using BepInEx;
 using BepInEx.Logging;
-using HarmonyLib;
 using UnityEngine;
 
 namespace WaitForMEak
@@ -14,8 +13,8 @@ namespace WaitForMEak
     /// revive would have cost them, and/or a pack.
     ///
     /// HOST ONLY: everything is driven by the master client through vanilla RPCs, so the people
-    /// joining don't need the mod. (If they do have it, they also get their spectator camera
-    /// pinned to the scout they're waiting on.)
+    /// joining don't need the mod. (If they do have it, their spectate panel also tells them who
+    /// the lowest scout is while they wait.)
     /// </summary>
     [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
     [BepInDependency(ModConfigGuid, BepInDependency.DependencyFlags.SoftDependency)]
@@ -45,7 +44,6 @@ namespace WaitForMEak
         internal static Plugin Instance { get; private set; }
         internal static ManualLogSource Log { get; private set; }
 
-        private Harmony _harmony;
         private GameObject _director;
 
         private void Awake()
@@ -54,25 +52,23 @@ namespace WaitForMEak
             Log = Logger;
 
             WaitConfig.Bind(Config);
+            LowestScoutNotice.Register();
 
-            _harmony = new Harmony(PluginGuid);
-            _harmony.PatchAll(typeof(Plugin).Assembly);
-
-            SpectateOverride.Register();
-
+            // Nothing here patches the game. The whole mod rides on vanilla RPCs, and the one
+            // piece of UI it adds is a label parented into the spectate panel at runtime.
             _director = new GameObject(PluginName + "Director");
             _director.hideFlags = HideFlags.HideAndDontSave;
             DontDestroyOnLoad(_director);
             _director.AddComponent<LateJoinDirector>();
+            _director.AddComponent<LowestScoutNoticeUI>();
 
             Log.LogInfo($"{PluginName} {PluginVersion} loaded. Only the host needs this.");
         }
 
         private void OnDestroy()
         {
-            SpectateOverride.Unregister();
+            LowestScoutNotice.Unregister();
             if (_director != null) Destroy(_director);
-            _harmony?.UnpatchSelf();
         }
     }
 }
