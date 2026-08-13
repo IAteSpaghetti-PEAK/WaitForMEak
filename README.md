@@ -28,9 +28,10 @@ fix. The pack rules below still apply either way.
 
 ## Settings
 
-Two settings show up in the in-game mod settings menu (via
-[ModConfig](https://thunderstore.io/c/peak/p/PEAKModding/PEAKLib_ModConfig/); without it they're
-still editable in `BepInEx/config/com.iatespaghetti.waitformeak.cfg`):
+Two settings show up in the in-game mod settings menu, under the **Wait For MEAK** tab. That menu
+comes from [ModConfig](https://thunderstore.io/c/peak/p/PEAKModding/ModConfig/), which is listed as
+a dependency purely for convenience — it's **optional**, and without it the same two settings (and
+everything else) are still editable in `BepInEx/config/com.iatespaghetti.waitformeak.cfg`:
 
 | Setting | Default | What it does |
 | --- | --- | --- |
