@@ -24,13 +24,18 @@ namespace WaitForMEak
         public const string PluginGuid = "com.iatespaghetti.waitformeak";
 
         /// <summary>
-        /// Spelt MEAK, not MEak, on purpose. ModConfig titles its tab with
-        /// Regex-split(Metadata.Name), and its second pass splits any uppercase pair followed by
-        /// a lowercase letter — so "WaitForMEak" comes out as "Wait For M Eak". All-caps MEAK
-        /// has no such pair and renders as "Wait For MEAK". The package, assembly and GUID keep
-        /// the original spelling.
+        /// All caps on purpose, to keep the ModConfig tab title in one piece.
+        ///
+        /// ModConfig titles its tab with FixNaming(Metadata.Name), which inserts a space at every
+        /// lowercase→uppercase boundary AND at every uppercase pair followed by a lowercase. So
+        /// "WaitForMEak" becomes "Wait For M Eak" and even "WaitForMEAK" becomes "Wait For MEAK".
+        /// A name with no lowercase letter at all trips neither rule and comes through untouched.
+        /// The casing itself costs nothing: PeakHorizontalTabs.AddTab renders the tab with
+        /// FontStyles.UpperCase regardless, so this is purely about the spaces.
+        ///
+        /// The package, assembly, repo and GUID all keep the normal WaitForMEak spelling.
         /// </summary>
-        public const string PluginName = "WaitForMEAK";
+        public const string PluginName = "WAITFORMEAK";
         public const string PluginVersion = "0.1.0";
 
         /// <summary>PEAKLib.ModConfig, which draws our settings in the in-game menu if it's

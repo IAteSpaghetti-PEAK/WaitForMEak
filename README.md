@@ -14,7 +14,7 @@ own RPCs, so the people joining can be running vanilla.
 
 [ModConfig](https://thunderstore.io/c/peak/p/PEAKModding/ModConfig/) is listed as a dependency, but
 it is **not required** — the mod does exactly the same thing with or without it. What it adds is a
-**Wait For MEAK** tab in the in-game mod settings menu, so you can turn the Curse, the pack rules
+**WAITFORMEAK** tab in the in-game mod settings menu, so you can turn the Curse, the pack rules
 and the rest on and off from the pause screen, mid-run, instead of alt-tabbing out to edit a text
 file. Skip it if you'd rather not install anything extra: every setting is still there in
 `BepInEx/config/com.iatespaghetti.waitformeak.cfg`, and the ones that don't fit in the menu live
@@ -39,7 +39,7 @@ fix. The pack rules below still apply either way.
 
 ## Settings
 
-These four are the ones on the **Wait For MEAK** menu tab (and, as ever, in the config file):
+These four are the ones on the **WAITFORMEAK** menu tab (and, as ever, in the config file):
 
 | Setting | Default | What it does |
 | --- | --- | --- |
