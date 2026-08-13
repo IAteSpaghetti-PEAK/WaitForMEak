@@ -10,6 +10,7 @@ namespace WaitForMEak
     internal class PendingJoin
     {
         public int ActorNumber;
+        public string UserId;
         public string Nickname;
         public float JoinedAt;
 
@@ -21,6 +22,12 @@ namespace WaitForMEak
         /// way for those - no ghost, no teleport, no Curse - and only hand over a pack.
         /// </summary>
         public bool CampfireSpawn;
+
+        /// <summary>
+        /// They were already part of this run, so the hold must not cost them anything. See
+        /// <see cref="HeldBelongings"/>. Only ever set when "Also move reconnecting players" is on.
+        /// </summary>
+        public bool PreserveBelongings;
 
         /// <summary>Set once we've forced them into the ghost state, so we don't spam RPCs.</summary>
         public bool GhostForced;
@@ -42,6 +49,16 @@ namespace WaitForMEak
 
         private readonly Dictionary<int, PendingJoin> _pending = new Dictionary<int, PendingJoin>();
         private readonly List<PendingJoin> _scratch = new List<PendingJoin>();
+
+        /// <summary>
+        /// People who dropped out while we were still holding them, keyed by user id because
+        /// actor numbers change on rejoin. The value is their <see cref="PendingJoin.PreserveBelongings"/>
+        /// flag. Without this they'd come back carrying reconnect data that says "dead at base
+        /// camp", the reconnect check would wave them through, and they'd be stranded there
+        /// having never been taken to anyone.
+        /// </summary>
+        private readonly Dictionary<string, bool> _interrupted = new Dictionary<string, bool>();
+
         private float _nextPoll;
 
         private void Awake()
@@ -68,26 +85,41 @@ namespace WaitForMEak
                 return;
             }
 
-            if (!WaitConfig.IncludeReconnectingPlayers.Value && HasReconnectData(newPlayer))
+            string userId = newPlayer.UserId;
+            bool wasPreserving = false;
+            bool resuming = userId != null && _interrupted.TryGetValue(userId, out wasPreserving);
+            if (resuming) _interrupted.Remove(userId);
+
+            bool reconnecting = HasReconnectData(newPlayer);
+
+            if (!resuming && !WaitConfig.IncludeReconnectingPlayers.Value && reconnecting)
             {
                 Plugin.Log.LogInfo($"{newPlayer.NickName} is reconnecting to this run - leaving them to the game.");
                 return;
             }
 
-            bool campfire = CampfireWillSpawnThemIn();
+            // A resumed hold always resumes. The campfire rule is about not interfering with
+            // someone the game is placing into the run for the first time, and this is us
+            // finishing a job we already started on them.
+            bool campfire = !resuming && CampfireWillSpawnThemIn();
 
             _pending[newPlayer.ActorNumber] = new PendingJoin
             {
                 ActorNumber = newPlayer.ActorNumber,
+                UserId = userId,
                 Nickname = newPlayer.NickName,
                 JoinedAt = Time.time,
                 CharacterSeenAt = -1f,
                 CampfireSpawn = campfire,
+                PreserveBelongings = resuming ? wasPreserving : reconnecting,
             };
 
-            Plugin.Log.LogInfo(campfire
-                ? $"{newPlayer.NickName} joined a run in progress, but the base camp campfire spawns them in - leaving that alone."
-                : $"{newPlayer.NickName} joined a run in progress - holding them until the lowest scout is safe.");
+            if (resuming)
+                Plugin.Log.LogInfo($"{newPlayer.NickName} is back after dropping out mid-hold - picking up where we left off.");
+            else if (campfire)
+                Plugin.Log.LogInfo($"{newPlayer.NickName} joined a run in progress, but the base camp campfire spawns them in - leaving that alone.");
+            else
+                Plugin.Log.LogInfo($"{newPlayer.NickName} joined a run in progress - holding them until the lowest scout is safe.");
         }
 
         /// <summary>
@@ -105,8 +137,21 @@ namespace WaitForMEak
         public void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
         {
             if (otherPlayer == null) return;
-            if (_pending.Remove(otherPlayer.ActorNumber))
+            if (!_pending.TryGetValue(otherPlayer.ActorNumber, out PendingJoin p)) return;
+
+            _pending.Remove(otherPlayer.ActorNumber);
+
+            // Remember the ones we were actually holding, so rejoining resumes the hold instead
+            // of dumping them at base camp as an ordinary reconnect.
+            if (!p.Completing && !p.CampfireSpawn && p.UserId != null)
+            {
+                _interrupted[p.UserId] = p.PreserveBelongings;
+                Plugin.Log.LogInfo($"{otherPlayer.NickName} left mid-hold - we'll pick it back up if they return.");
+            }
+            else
+            {
                 Plugin.Log.LogInfo($"{otherPlayer.NickName} left before we could place them.");
+            }
         }
 
         public void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient) { }
@@ -127,6 +172,7 @@ namespace WaitForMEak
             if (!PhotonNetwork.InRoom || !GameHandler.IsOnIsland)
             {
                 if (_pending.Count > 0) _pending.Clear();
+                if (_interrupted.Count > 0) _interrupted.Clear();
                 return;
             }
             if (_pending.Count == 0) return;
@@ -266,14 +312,35 @@ namespace WaitForMEak
             Vector3 pos = Arrival.PickArrivalPosition(groundPoint);
 
             Plugin.Log.LogInfo($"Dropping {p.Nickname} next to {target.characterName} at {pos}.");
-            c.photonView.RPC("RPCA_ReviveAtPosition", RpcTarget.All, pos, false,
-                             (int)MapHandler.CurrentSegmentNumber);
+
+            float[] statuses = null;
+            if (p.PreserveBelongings)
+            {
+                // Someone who was already in this run keeps everything they had. The hold only
+                // moves them.
+                statuses = HeldBelongings.SnapshotStatuses(c);
+                HeldBelongings.Revive(c, pos);
+            }
+            else
+            {
+                c.photonView.RPC("RPCA_ReviveAtPosition", RpcTarget.All, pos, false,
+                                 (int)MapHandler.CurrentSegmentNumber);
+            }
 
             yield return new WaitForSeconds(Mathf.Max(0f, WaitConfig.PostReviveDelay.Value));
 
             if (c != null)
             {
-                JoinCurse.Apply(c);
+                if (p.PreserveBelongings)
+                {
+                    // Their own Curse comes back with the rest of their statuses. The join Curse
+                    // is for people arriving fresh, not for someone we interrupted.
+                    HeldBelongings.RestoreStatuses(c, statuses);
+                }
+                else
+                {
+                    JoinCurse.Apply(c);
+                }
                 JoinPack.Grant(c);
             }
 
