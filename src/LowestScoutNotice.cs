@@ -107,6 +107,9 @@ namespace WaitForMEak
     /// </summary>
     internal class LowestScoutNoticeUI : MonoBehaviour
     {
+        /// <summary>Hint size as a fraction of the name above it.</summary>
+        private const float HintSizeRatio = 0.55f;
+
         private TextMeshProUGUI _label;
         private TextMeshProUGUI _clonedFrom;
 
@@ -131,12 +134,37 @@ namespace WaitForMEak
 
             if (!EnsureLabel(gui.spectatingNameText)) return;
 
+            MatchTypeface(gui.spectatingNameText);
+
             _label.text = (MainCameraMovement.specCharacter == lowest)
                 ? "LOWEST PLAYER"
                 : "LOWEST PLAYER: " + lowest.characterName;
             _label.color = gui.spectatingNameColor;
 
             if (!_label.gameObject.activeSelf) _label.gameObject.SetActive(true);
+        }
+
+        /// <summary>
+        /// Keep the label wearing the same typeface as the name above it.
+        ///
+        /// Cloning the name text already copies the font asset and its material, but that's a
+        /// snapshot. PEAK swaps font assets between languages (Japanese and the Chinese variants
+        /// don't share a face with the Latin one), and the name's own size moves around because
+        /// it auto-sizes to fit. Re-reading it every frame is a handful of reference compares,
+        /// and it means the hint can never end up in a different face from the line above it.
+        /// </summary>
+        private void MatchTypeface(TextMeshProUGUI src)
+        {
+            if (_label.font != src.font) _label.font = src.font;
+            if (_label.fontSharedMaterial != src.fontSharedMaterial)
+                _label.fontSharedMaterial = src.fontSharedMaterial;
+            if (_label.fontStyle != src.fontStyle) _label.fontStyle = src.fontStyle;
+            if (_label.fontWeight != src.fontWeight) _label.fontWeight = src.fontWeight;
+
+            // src.fontSize is the size actually being drawn, auto-sizing included, so this
+            // tracks the name rather than guessing from its configured maximum.
+            float wanted = Mathf.Max(10f, src.fontSize * HintSizeRatio);
+            if (!Mathf.Approximately(_label.fontSize, wanted)) _label.fontSize = wanted;
         }
 
         private void Hide()
@@ -151,11 +179,15 @@ namespace WaitForMEak
             if (_label != null && _clonedFrom == nameText) return true;
             if (_label != null) Destroy(_label.gameObject);
 
+            // Cloning the game's own label is what gets us its font, material and styling for
+            // free. Building a TextMeshProUGUI from scratch would come up with TMP's default
+            // face, which looks nothing like the rest of PEAK.
             GameObject go = Instantiate(nameText.gameObject);
             go.name = "WaitForMEak_LowestScoutNotice";
 
             // Anything else riding on the original (localisation, animation, layout) would fight
-            // us for the text, so keep only what draws it.
+            // us for the text, so keep only what draws it. The font lives on the text component
+            // itself, so none of this costs us the typeface.
             foreach (Component comp in go.GetComponents<Component>())
             {
                 if (comp is RectTransform || comp is TextMeshProUGUI || comp is CanvasRenderer) continue;
@@ -180,10 +212,15 @@ namespace WaitForMEak
             rt.localScale = Vector3.one;
             rt.sizeDelta = new Vector2(Mathf.Max(320f, nameText.rectTransform.rect.width), 28f);
 
-            _label.enableAutoSizing = false;
-            _label.fontSize = Mathf.Max(10f, nameText.fontSize * 0.55f);
+            _label.enableAutoSizing = false; // sized off the name instead, see MatchTypeface
             _label.alignment = TextAlignmentOptions.Top;
             _label.raycastTarget = false;
+            _label.overflowMode = TextOverflowModes.Overflow;
+
+            // A player name is whatever Steam let them set, and angle brackets in one would be
+            // read as TMP markup and mangle the line.
+            _label.richText = false;
+
             _label.gameObject.SetActive(false);
 
             _clonedFrom = nameText;
