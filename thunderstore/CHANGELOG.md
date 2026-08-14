@@ -2,7 +2,7 @@
 
 ## 0.1.1
 
-Icon change (No changes to the actual mod in this edit)
+Icon change on thunderstore page (No changes to the actual mod in this edit so no need to reinstall)
 
 ## 0.1.0
 
