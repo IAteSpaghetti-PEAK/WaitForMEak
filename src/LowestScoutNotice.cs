@@ -137,8 +137,8 @@ namespace WaitForMEak
             MatchTypeface(gui.spectatingNameText);
 
             _label.text = (MainCameraMovement.specCharacter == lowest)
-                ? "LOWEST PLAYER"
-                : "LOWEST PLAYER: " + lowest.characterName;
+                ? "LOWEST SCOUT"
+                : "LOWEST SCOUT: " + lowest.characterName;
             _label.color = gui.spectatingNameColor;
 
             if (!_label.gameObject.activeSelf) _label.gameObject.SetActive(true);

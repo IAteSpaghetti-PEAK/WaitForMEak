@@ -24,7 +24,7 @@ None of this is built on its code. WaitForMEak was written from scratch against 
 assemblies, and it goes further than the original did in several places: it waits for the lowest
 scout to be standing somewhere safe rather than teleporting on arrival, it keeps working when the
 host hands off to another player, and it deals with reconnecting players, Curse, packs and the
-spectate hint.
+spectate info on lowest scout.
 
 ## ModConfig is optional
 
@@ -111,7 +111,7 @@ off them.
 
 What it does add is a line on the spectate panel, under the name of whoever they're currently
 watching, naming the lowest scout: the one they're actually waiting on. If they're already watching
-that scout, the line reads **LOWEST PLAYER** instead of repeating the name. Either way they can
+that scout, the line reads **LOWEST SCOUT** instead of repeating the name. Either way they can
 press left and right to look around, and see at a glance who has to find their footing before they
 get dropped in.
 
