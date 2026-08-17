@@ -17,6 +17,9 @@ namespace WaitForMEak
 
         /// <summary>Ours to hold and place next to the lowest scout.</summary>
         Hold,
+
+        /// <summary>Not ours to touch at all. Stop tracking them.</summary>
+        StandDown,
     }
 
     /// <summary>One scout who joined mid-run and hasn't been dealt with yet.</summary>
@@ -187,6 +190,18 @@ namespace WaitForMEak
             return CharacterSpawner.ScoutsWereRevivedAtCurrentBaseCamp;
         }
 
+        /// <summary>
+        /// The Void with the soul freed is the one place the game deliberately shuts joiners out
+        /// rather than merely leaving them behind. CharacterSpawner overwrites their reconnect
+        /// data to say dead and cancels the revive, and MapHandler reports the campfire as unsafe.
+        /// Putting them back on their feet there would be overriding the ending, so stand down and
+        /// let the Void have them.
+        /// </summary>
+        private static bool VoidHasClosed()
+        {
+            return Peak.VoidBiome.VoidBiomeActive && Peak.VoidBiome.SoulFreedStatus == 1;
+        }
+
         // ---------------------------------------------------------------------------- main loop
 
         private void Update()
@@ -216,15 +231,33 @@ namespace WaitForMEak
             _scratch.Clear();
             _scratch.AddRange(_pending.Values);
 
+            bool voidClosed = VoidHasClosed();
+
             foreach (PendingJoin p in _scratch)
             {
                 if (p.Completing) continue;
+
+                // Checked every tick, not just on arrival: the soul can be freed while we're
+                // still holding somebody.
+                if (voidClosed)
+                {
+                    Plugin.Log.LogInfo($"The Void is closed, so {p.Nickname} stays out of it. Leaving them to the game.");
+                    _pending.Remove(p.ActorNumber);
+                    continue;
+                }
+
                 if (!ResolveCharacter(p)) continue;
 
                 if (p.Decision == HoldDecision.Undecided)
                 {
                     Decide(p);
                     if (p.Decision == HoldDecision.Undecided) continue;
+                }
+
+                if (p.Decision == HoldDecision.StandDown)
+                {
+                    _pending.Remove(p.ActorNumber);
+                    continue;
                 }
 
                 if (p.Decision == HoldDecision.LeaveToTheGame)

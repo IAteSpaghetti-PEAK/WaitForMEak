@@ -10,6 +10,22 @@ standing somewhere sane.
 **Only the host needs this mod.** Everything is driven by the master client through the game's
 own RPCs, so the people joining can be running vanilla.
 
+## If you have Reconnect Catchup installed, remove it
+
+[Reconnect Catchup](https://thunderstore.io/c/peak/p/Ayzax/Reconnect_Catchup/) did the same basic
+job, and this mod exists because it stopped working and was never fixed. Its only release went up in
+June 2025 and has not been touched since, so it no longer works on current PEAK.
+
+**Do not run both.** They are both host only and both act the instant somebody joins, so they end up
+fighting over the same player. Reconnect Catchup teleports them immediately, this one wants to hold
+them first, and which of those you get depends on which fires soonest. Uninstall it.
+
+None of this is built on its code. WaitForMEak was written from scratch against PEAK's own
+assemblies, and it goes further than the original did in several places: it waits for the lowest
+scout to be standing somewhere safe rather than teleporting on arrival, it keeps working when the
+host hands off to another player, and it deals with reconnecting players, Curse, packs and the
+spectate hint.
+
 ## ModConfig is optional
 
 [ModConfig](https://thunderstore.io/c/peak/p/PEAKModding/ModConfig/) is listed as a dependency, but

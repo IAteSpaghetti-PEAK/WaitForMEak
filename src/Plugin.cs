@@ -35,7 +35,7 @@ namespace WaitForMEak
         /// The package, assembly, repo and GUID all keep the normal WaitForMEak spelling.
         /// </summary>
         public const string PluginName = "WAITFORMEAK";
-        public const string PluginVersion = "0.1.1";
+        public const string PluginVersion = "0.1.2";
 
         /// <summary>PEAKLib.ModConfig, which draws our settings in the in-game menu if it's
         /// installed. Purely optional - the mod behaves identically without it.</summary>
