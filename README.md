@@ -12,9 +12,9 @@ own RPCs, so the people joining can be running vanilla.
 
 ## If you have Reconnect Catchup installed, remove it
 
-[Reconnect Catchup](https://thunderstore.io/c/peak/p/Ayzax/Reconnect_Catchup/) did the same basic
-job, and this mod exists because it stopped working and was never fixed. Its only release went up in
-June 2025 and has not been touched since, so it no longer works on current PEAK.
+[Reconnect Catchup](https://thunderstore.io/c/peak/p/Ayzax/Reconnect_Catchup/) did a more basic
+version of this, and this mod exists because it stopped working and was never fixed. Its only
+release went up in June 2025 and has not been touched since, so it no longer works on current PEAK.
 
 **Do not run both.** They are both host only and both act the instant somebody joins, so they end up
 fighting over the same player. Reconnect Catchup teleports them immediately, this one wants to hold
