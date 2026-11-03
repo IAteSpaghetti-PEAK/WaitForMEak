@@ -82,6 +82,9 @@ namespace WaitForMEak
 
         private float _nextPoll;
 
+        /// <summary>Longest we'll wait for a placement warp to finish before carrying on anyway.</summary>
+        private const float WarpTimeoutSeconds = 10f;
+
         private void Awake()
         {
             Instance = this;
@@ -173,10 +176,16 @@ namespace WaitForMEak
         /// builds these records, not just the host: ReconnectHandler.Update registers every
         /// player it sees and keeps their record current. That's what lets the bookkeeping here
         /// survive the host handing off.
+        ///
+        /// Looked up by the same id CharacterSpawner uses: the records are keyed by the "UserID"
+        /// custom property (hashed), which isn't always the Photon UserId that the
+        /// Photon-Player overload of TryGetReconnectData still reads.
         /// </summary>
         private static bool HasReconnectData(Photon.Realtime.Player player)
         {
-            return ReconnectHandler.TryGetReconnectData(player, out _, out _);
+            string id = ReconnectHandler.GetCustomPropertyUserIDIfExists(player);
+            if (string.IsNullOrEmpty(id)) return false;
+            return ReconnectHandler.TryGetReconnectData(id, out _, out _);
         }
 
         /// <summary>
@@ -445,6 +454,15 @@ namespace WaitForMEak
                 c.photonView.RPC("RPCA_ReviveAtPosition", RpcTarget.All, pos, false,
                                  (int)MapHandler.CurrentSegmentNumber);
             }
+
+            // Both routes warp them, and a warp locks the character's statuses on every client
+            // until it finishes: AddStatus and SubtractStatus bail out while statusesLocked is
+            // set, so Curse or restored statuses sent mid-warp would be silently dropped. The RPC
+            // above already ran here, so our copy is warping now; the owner's runs on the same
+            // schedule, and PostReviveDelay below is the margin on top.
+            float warpDeadline = Time.time + WarpTimeoutSeconds;
+            while (c != null && c.warping && Time.time < warpDeadline)
+                yield return null;
 
             yield return new WaitForSeconds(Mathf.Max(0f, WaitConfig.PostReviveDelay.Value));
 

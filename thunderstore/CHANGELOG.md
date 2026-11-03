@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.3
+
+Updated for the latest PEAK update.
+
+- Fixed the join Curse (and the restored statuses for reconnecting players) sometimes not
+  applying. PEAK now locks a player's statuses while they're being warped, so the mod waits for
+  the warp to finish before applying them.
+- Reconnecting players are now recognised by the same ID the game itself uses.
+
 ## 0.1.2
 
 The mod now stands down in the Void once the soul is freed, since the game deliberately keeps
